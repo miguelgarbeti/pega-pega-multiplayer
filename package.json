@@ -1,0 +1,16 @@
+{
+  "name": "pega-pega-multiplayer",
+  "version": "1.0.0",
+  "description": "Jogo 2D multiplayer em tempo real estilo pega-pega com HTML5 Canvas, Node.js e Socket.io",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
