@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pique-Bandeira Arena — Multiplayer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Tela Inicial / Lobby -->
+  <div id="lobby-screen" class="screen active">
+    <div class="lobby-card">
+      <div class="logo-badge">MULTIPLAYER EM TEMPO REAL</div>
+      <h1>Pique-Bandeira Arena</h1>
+      <p class="subtitle">
+        Corra até o <strong>ponto da bandeira</strong> no mapa para marcar pontos e desvie do <strong>pegador</strong>!
+      </p>
+
+      <div class="form-group">
+        <label for="player-name">Seu apelido</label>
+        <input
+          id="player-name"
+          type="text"
+          maxlength="16"
+          placeholder="Ex: Relâmpago"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="map-select">Mapa da sala</label>
+        <select id="map-select">
+          <option value="random">Aleatório (troca a cada rodada)</option>
+          <option value="ruinas_centrais">Ruínas Centrais (1600x1000)</option>
+          <option value="labirinto_tatico">Labirinto Tático (1600x1000)</option>
+          <option value="complexo_cruzado">Complexo Cruzado (1600x1000)</option>
+          <option value="arquipelago_torres">Ilhas e Torres (1600x1000)</option>
+        </select>
+      </div>
+
+      <button id="btn-create" class="btn btn-primary" type="button">
+        Criar Nova Sala
+      </button>
+
+      <div class="divider"><span>ou entre em uma sala existente</span></div>
+
+      <div class="join-row">
+        <input
+          id="room-code"
+          type="text"
+          maxlength="6"
+          placeholder="CÓDIGO (ex: A7K2M)"
+          autocomplete="off"
+        />
+        <button id="btn-join" class="btn btn-secondary" type="button">
+          Entrar
+        </button>
+      </div>
+
+      <p id="lobby-error" class="error-msg" role="alert" aria-live="polite"></p>
+
+      <div class="rules-box">
+        <div><strong>Controles:</strong> Setas ou <code>W A S D</code></div>
+        <div><strong>Objetivo:</strong> Alcance a bandeira dourada (+100 pts) sem ser pego!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tela da Partida -->
+  <div id="game-screen" class="screen">
+    <header class="hud">
+      <div class="hud-left">
+        <div class="room-pill">
+          <span class="label">SALA</span>
+          <strong id="hud-room-code">-----</strong>
+          <button id="btn-copy-code" class="icon-btn" type="button" title="Copiar código da sala">
+            Copiar
+          </button>
+        </div>
+        <div class="map-pill">
+          <span class="label">MAPA</span>
+          <strong id="hud-map-name">—</strong>
+        </div>
+        <div id="hud-status" class="status-pill waiting">Aguardando jogadores...</div>
+      </div>
+
+      <div class="hud-center">
+        <div id="hud-tagger-banner" class="tagger-banner hidden">
+          <span class="pulse-dot"></span>
+          <span>PEGADOR: <strong id="hud-tagger-name">—</strong></span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="timer-box">
+          <span class="label">TEMPO</span>
+          <strong id="hud-timer">75s</strong>
+        </div>
+        <button id="btn-mute" class="btn btn-ghost" type="button" title="Ativar/Desativar som">
+          Som: ON
+        </button>
+        <button id="btn-leave" class="btn btn-danger" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="arena-layout">
+      <div class="canvas-wrap">
+        <canvas id="game-canvas" width="960" height="600"></canvas>
+
+        <!-- Toast discreto de eventos (bandeira / troca de pegador) -->
+        <div id="event-toast" class="event-toast hidden"></div>
+
+        <!-- Overlay de espera / fim de rodada -->
+        <div id="arena-overlay" class="arena-overlay hidden">
+          <div class="overlay-card">
+            <h2 id="overlay-title">Aguardando jogadores</h2>
+            <p id="overlay-subtitle">Compartilhe o código da sala para começar (mínimo 2 jogadores).</p>
+            <div id="overlay-ranking" class="overlay-ranking"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Jogadores</h3>
+            <span id="player-count" class="count-badge">0/8</span>
+          </div>
+          <ul id="player-list" class="player-list"></ul>
+        </div>
+
+        <div class="panel controls-panel">
+          <h3>Regras Pique-Bandeira</h3>
+          <ul>
+            <li>Movimente-se com <strong>WASD</strong> ou <strong>Setas</strong>.</li>
+            <li>Vá até a <strong>Bandeira</strong> (siga a seta dourada ou o minimapa) para ganhar <strong>+100 pts</strong>.</li>
+            <li>O <strong>Pegador</strong> não pontua na bandeira, mas ganha <strong>+35 pts</strong> ao encostar em outro jogador e passar o pega.</li>
+            <li>Quem for pego vira o pegador e vai para um <strong>ponto aleatório</strong> do mapa (com <strong>1.2s</strong> de proteção).</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
